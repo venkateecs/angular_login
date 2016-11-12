@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EmployeeModel2StoreContainer" CdmEntityContainer="mail_box_entities">
+    <EntitySetMapping Name="mail_box">
+      <EntityTypeMapping TypeName="EmployeeModel2.mail_box">
+        <MappingFragment StoreEntitySet="mail_box">
+          <ScalarProperty Name="sr_no" ColumnName="sr_no" />
+          <ScalarProperty Name="from_mail" ColumnName="from_mail" />
+          <ScalarProperty Name="to_mail" ColumnName="to_mail" />
+          <ScalarProperty Name="subject" ColumnName="subject" />
+          <ScalarProperty Name="body" ColumnName="body" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

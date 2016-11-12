@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="EmployeeEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="user_master" EntityType="EmployeeModel.user_master" />
+  </EntityContainer>
+  <EntityType Name="user_master">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="Decimal" Nullable="false" Precision="20" Scale="0" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="user_name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="password" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+  </EntityType>
+</Schema>

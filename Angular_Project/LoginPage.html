@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Login Page</title>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-cookies.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <script src="Scripts/login.js"></script>
+</head>
+
+<form name="form1" ng-app="my_app" ng-controller="my_ctrl" novalidate>
+    <body>
+
+        <center> <h1>Welcome To Infosys Pvt Ltd</h1></center>
+
+        <div>
+            <table align="center">
+                <caption>Login Here</caption>
+                <tr>
+                    <th>User Name</th>
+                    <td>
+                        <input type="text" name="user_name" ng-model="user.user_name" required />
+                        <span style="color: red" ng-show="form1.user_name.$dirty && form1.user_name.$invalid">
+                            <span style="color: red" ng-show="form1.user_name.$error.required">Please Enter UserName
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td>
+                        <input type="password" name="password1" ng-model="user.password" required />
+                        <span style="color: red" ng-show="form1.password1.$dirty && form1.password1.$invalid">
+                            <span style="color: red" ng-show="form1.password1.$error.required">please Enter Password
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="center">
+                        <input type="button" value="Submit" ng-click="user_submit()" ng-disabled="form1.user_name.$invalid || form1.password1.$invalid" />
+                        <input type="button" value="Register" ng-click="register()" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </body>
+</form>
+</html>

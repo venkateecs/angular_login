@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeModel2.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="EmployeeModel2StoreContainer">
+    <EntitySet Name="mail_box" EntityType="EmployeeModel2.Store.mail_box" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="mail_box">
+    <Key>
+      <PropertyRef Name="sr_no" />
+    </Key>
+    <Property Name="sr_no" Type="numeric" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="from_mail" Type="varchar" MaxLength="100" />
+    <Property Name="to_mail" Type="varchar" MaxLength="100" />
+    <Property Name="subject" Type="varchar" MaxLength="100" />
+    <Property Name="body" Type="varchar" MaxLength="500" />
+  </EntityType>
+</Schema>

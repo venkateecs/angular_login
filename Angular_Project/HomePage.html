@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Home Page</title>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-cookies.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <script src="Scripts/login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/checklist-model/0.10.0/checklist-model.js"></script>
+
+    <script>
+        var app = angular.module("my_home", ['my_app', 'ngCookies', 'checklist-model']);
+        app.controller("my_home_ctrl", function ($scope, $cookieStore, $http, $filter) {
+            $scope.message = $cookieStore.get("user_name");
+
+            $scope.mails = [{ "from_mail": "", "to_mail": "", "subject": "", "body": "" }];
+            $scope.insert_mails = [{ "from_mail": "", "to_mail": "", "subject": "", "body": "" }];
+
+            $scope.insert_emails = [{ "user_id": "", "user_name": "", "email_id": "" }];
+
+
+            $scope.log_out = function () {
+                $cookieStore.remove("user_name");
+                location.href = "LoginPage.html";
+            }
+
+            $http.get("/api/emails").then(function (response) {
+                $scope.get_email_ids = response.data;
+            }
+             )
+
+            $http.get("/api/mail_box").then(function (response) {
+
+                $scope.mail_box_message = response.data;
+            }
+            )
+
+            $http.get("/api/UserMaster").then(function (response) {
+                $scope.guser = response.data;
+            }
+            )
+
+
+
+            $scope.show_compose = false;
+            $scope.show_sendmail = false;
+            $scope.add_mail_id_show = false;
+            $scope.inbox_show = false;
+
+            $scope.compose_mail = function () {
+                $scope.add_email_id = "";
+                var count = 0;
+                angular.forEach($scope.get_email_ids, function (value, key) {
+                    if (value.user_name == $scope.message) {
+                        $scope.email_id = value.email_id;
+                        count = 1;
+                    }
+                })
+
+                if (count == 0) {
+                    var msgbox = "";
+                    msgbox = confirm("You Do not have email id do you want to Add");
+                    if (msgbox == true) {
+                        $scope.show_compose = false;
+                        $scope.add_mail_id_show = true;
+                        $scope.show_sendmail = false;
+                        $scope.inbox_show = false;
+
+                        angular.forEach($scope.guser, function (value, key) {
+                            //alert("Hello==>" + value.user_name);
+                            //alert("Hello==>" + value.user_id);
+                            //alert("$scope.message==>" + $scope.message);
+                            if (value.user_name == $scope.message) {
+                                $scope.login_user_id = value.user_id;
+                                // $scope.insert_emails.user_id = value.user_id;
+                                //$scope.insert_emails.user_name = value.user_name;
+                            }
+                        })
+
+
+                    }
+
+                    if (msgbox == false) {
+                        //alert("False");
+                    }
+
+                }
+                if (count == 1) {
+                    $scope.show_compose = true;
+                    $scope.show_sendmail = false;
+                    $scope.inbox_show = false;
+                    $scope.insert_mails.from_mail = $scope.email_id;
+                }
+            }
+
+            $scope.send_mail = function () {
+                $scope.add_mail_id_show = false;
+                $scope.insert_mails = { "from_mail": $scope.insert_mails.from_mail, "to_mail": $scope.insert_mails.to_mail, "subject": $scope.insert_mails.subject, "body": $scope.insert_mails.body };
+                var count = 0;
+                angular.forEach($scope.get_email_ids, function (value, key) {
+                    if (value.email_id == $scope.insert_mails.to_mail) {
+                        count = 1;
+                    }
+                })
+
+                if (count == 0) {
+                    alert("Mail Id is Not Available in the Database")
+                }
+                if (count == 1) {
+                    $http.post("/api/mail_box", $scope.insert_mails).then(function (response) {
+                        $scope.mails.push($scope.insert_mails);
+                        alert("Mail Sent Successfully");
+                        $scope.insert_mails.from_mail = "";
+                        $scope.insert_mails.to_mail = "";
+                        $scope.insert_mails.subject = "";
+                        $scope.insert_mails.body = "";
+                    })
+                }
+
+
+                //alert($scope.mails.to_mail);
+            }
+
+
+
+            $scope.sent_mail = function () {
+                $scope.add_mail_id_show = false;
+
+
+
+                angular.forEach($scope.get_email_ids, function (value, key) {
+                    if (value.user_name == $scope.message) {
+                        $scope.email_id = value.email_id;
+                    }
+                })
+
+                $scope.sent_emails = ($filter('filter')($scope.mail_box_message, { from_mail: $scope.email_id }));
+
+                $scope.roles = $scope.sent_emails;
+                $scope.user = {
+                    roles: [$scope.roles[0]]
+                }
+
+                $scope.show_compose = false;
+                $scope.show_sendmail = true;
+                $scope.inbox_show = false;
+            }
+
+            $scope.check_all = function () {
+                if ($scope.chk_all == true) {
+                    $scope.user.roles = angular.copy($scope.roles)
+                }
+                if ($scope.chk_all == false) {
+                    $scope.user.roles = [];
+                }
+            }
+
+            $scope.delete_mail_box = function () {
+
+                if ($scope.user.roles.length == 0) {
+                    alert("Please Select Atleast one Record to Delete");
+                }
+                if ($scope.user.roles.length > 0) {
+                    var chk_delete;
+                    chk_delete = confirm("Are You Sure You Want To Delete These Records");
+                    var chk_cnt_delete = 0;
+                    if (chk_delete == true) {
+                        angular.forEach($scope.user.roles, function (value, key) {
+                            if (chk_cnt_delete > 0) {
+                                chk_cnt_delete = chk_cnt_delete + 1;
+                            }
+
+                            //alert(value.sr_no);
+                            $http.delete("/api/mail_box/" + value.sr_no).then(function (response) {
+
+                                alert(response.data);
+                                $scope.sent_emails = ($filter('filter')($scope.mail_box_message, { from_mail: $scope.email_id }));
+                            })
+
+                        })
+                    }
+                }
+            }
+
+            $scope.inbox_mail = function () {
+
+                angular.forEach($scope.get_email_ids, function (value, key) {
+                    if (value.user_name == $scope.message) {
+                        $scope.email_id = value.email_id;
+                    }
+                })
+
+                $scope.add_mail_id_show = false;
+                $scope.show_compose = false;
+                $scope.show_sendmail = false;
+                $scope.inbox_show = true;
+                $scope.inbox_emails = ($filter('filter')($scope.mail_box_message, { to_mail: $scope.email_id }));
+
+            }
+
+            $scope.add_mailid = function () {
+                $scope.insert_emails = { "user_id": $scope.login_user_id, "user_name": $scope.message, "email_id": $scope.add_email_id };
+
+                //alert($scope.insert_emails.user_id);
+                //alert($scope.insert_emails.user_name);
+                //alert($scope.insert_emails.email_id);
+                $http.post("/api/emails", $scope.insert_emails).then(function (response) {
+                    alert(response.data);
+                    $scope.get_email_ids.push($scope.insert_emails);
+                    $scope.insert_mails.from_mail = $scope.add_email_id;
+                    $scope.add_mail_id_show = false;
+                    $scope.show_compose = true;
+                    $scope.show_sendmail = false;
+                    $scope.inbox_show = false;
+
+                })
+            }
+
+
+        })
+    </script>
+</head>
+<form name="form1" ng-app="my_home" ng-controller="my_home_ctrl" novalidate>
+
+    <div align="right">
+        <input type="button" value="Logout" ng-click="log_out()" />
+    </div>
+
+    <body>
+        <center> <h1>Welcome To Infosys Pvt Ltd</h1></center>
+        <center><h1>Congrats {{message}} </h1></center>
+    </body>
+    <div>
+        <input type="button" value="Inbox" ng-click="inbox_mail()" />
+        <input type="button" value="Compose Mail" ng-click="compose_mail()" />
+        <input type="button" value="Sent Mail" ng-click="sent_mail()" />
+    </div>
+    <div ng-show="show_compose" align="center">
+        <table>
+            <caption>Mail Card</caption>
+            <tr>
+                <th>From Mail</th>
+                <td>
+                    <input type="text" readonly="true" name="from_mail" ng-model="insert_mails.from_mail" /></td>
+            </tr>
+            <tr>
+                <th>To Mail</th>
+                <td>
+                    <input type="email" name="to_mail" ng-model="insert_mails.to_mail" required />
+                    <span style="color: red" ng-show="form1.to_mail.$dirty && form1.to_mail.$invalid">
+                        <span ng-show="form1.to_mail.$error.required">Please Enter To Mail
+                        </span>
+                        <span ng-show="form1.to_mail.$error.email">Please Enter Valid Email Id
+                        </span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Subject</th>
+                <td>
+                    <input type="text" name="subject" ng-model="insert_mails.subject" required />
+                    <span style="color: red" ng-show="form1.subject.$dirty && form1.subject.$invalid">
+                        <span ng-show="form1.subject.$error.required">Please Enter Subject
+                        </span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Body</th>
+                <td>
+                    <textarea name="body" ng-model="insert_mails.body" required>
+
+                    </textarea>
+                    <span style="color: red" ng-show="form1.body.$dirty && form1.body.$invalid">
+                        <span ng-show="form1.body.$error.required">Please Enter Body
+                        </span>
+                    </span>
+
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" align="center">
+                    <input type="button" value="Send" ng-click="send_mail()" ng-disabled="form1.to_mail.$invalid || form1.subject.$invalid || form1.body.$invalid" />
+                </th>
+            </tr>
+        </table>
+
+    </div>
+    <div ng-show="show_sendmail" align="center">
+        <table border="1">
+            <caption><b>Sent Mails  </b></caption>
+            <tr>
+                <th>From Mail</th>
+                <th>To Mail</th>
+                <th>Subject</th>
+                <th>Body</th>
+                <th>Check All
+                    <!--<input type="checkbox" ng-model="chk_inb_hdr" />-->
+                    <input type="checkbox" ng-model="chk_all" ng-click="check_all()" />
+                </th>
+            </tr>
+            <!--  <tr ng-repeat="mail in mail_box_message | filter:email_id">-->
+            <tr ng-repeat="mail in sent_emails">
+
+                <td>{{mail.from_mail}}</td>
+                <td>{{mail.to_mail}}</td>
+                <td>{{mail.subject}}</td>
+                <td>{{mail.body}}</td>
+                <td>
+                    <!--<input type="checkbox" ng-checked="chk_inb_hdr" />-->
+                    <input type="checkbox" data-checklist-model="user.roles" data-checklist-value="mail" />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <table align="center">
+            <tr>
+                <td>
+                    <input type="button" value="Delete" ng-click="delete_mail_box()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div ng-show="add_mail_id_show">
+        <table align="center" border="1">
+            <caption><b>Add Your Email Id</b></caption>
+            <tr>
+                <th>UserId</th>
+                <td>
+                    <input type="text" name="add_user_id" readonly ng-model="login_user_id" />
+                </td>
+            </tr>
+            <tr>
+                <th>UserName</th>
+                <td>
+                    <input type="text" name="add_user_name" readonly ng-model="message" />
+                </td>
+            </tr>
+            <tr>
+                <th>Email Id</th>
+                <td>
+                    <input type="email" name="add_email_id" ng-model="add_email_id" required />
+                    <span style="color: red" ng-show="form1.add_email_id.$dirty && form1.add_email_id.$invalid">
+                        <span ng-show="form1.add_email_id.$error.required">Please Enter Email id
+                        </span>
+                        <span ng-show="form1.add_email_id.$error.email">Please Enter Valid Email id
+                        </span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" align="center">
+                    <input type="button" value="Add" ng-click="add_mailid()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div ng-show="inbox_show" align="center">
+        <table border="1">
+            <caption><b>Inbox</b></caption>
+            <tr>
+                <th>From Mail</th>
+                <th>To Mail</th>
+                <th>Subject</th>
+                <th>Body</th>
+            </tr>
+            <!--  <tr ng-repeat="mail in mail_box_message | filter:email_id">-->
+            <tr ng-repeat="inbox_email in inbox_emails">
+
+                <td>{{inbox_email.from_mail}}</td>
+                <td>{{inbox_email.to_mail}}</td>
+                <td>{{inbox_email.subject}}</td>
+                <td>{{inbox_email.body}}</td>
+            </tr>
+        </table>
+
+    </div>
+</form>
+</html>

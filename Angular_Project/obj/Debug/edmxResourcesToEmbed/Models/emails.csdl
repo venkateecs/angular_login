@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeModel1" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="EmployeeEntities1" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="emails" EntityType="EmployeeModel1.email" />
+  </EntityContainer>
+  <EntityType Name="email">
+    <Key>
+      <PropertyRef Name="sr_no" />
+    </Key>
+    <Property Name="sr_no" Type="Decimal" Nullable="false" Precision="18" Scale="0" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="user_id" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="user_name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="email_id" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+  </EntityType>
+</Schema>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="EmployeeModel2.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="EmployeeModel2StoreContainer">
+          <EntitySet Name="mail_box" EntityType="EmployeeModel2.Store.mail_box" store:Type="Tables" Schema="dbo" />
+        </EntityContainer>
+        <EntityType Name="mail_box">
+          <Key>
+            <PropertyRef Name="sr_no" />
+          </Key>
+          <Property Name="sr_no" Type="numeric" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="from_mail" Type="varchar" MaxLength="100" />
+          <Property Name="to_mail" Type="varchar" MaxLength="100" />
+          <Property Name="subject" Type="varchar" MaxLength="100" />
+          <Property Name="body" Type="varchar" MaxLength="500" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EmployeeModel2" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="mail_box_entities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="mail_box" EntityType="EmployeeModel2.mail_box" />
+        </EntityContainer>
+        <EntityType Name="mail_box">
+          <Key>
+            <PropertyRef Name="sr_no" />
+          </Key>
+          <Property Name="sr_no" Type="Decimal" Nullable="false" Precision="18" Scale="0" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="from_mail" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="to_mail" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="subject" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="body" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EmployeeModel2StoreContainer" CdmEntityContainer="mail_box_entities">
+          <EntitySetMapping Name="mail_box">
+            <EntityTypeMapping TypeName="EmployeeModel2.mail_box">
+              <MappingFragment StoreEntitySet="mail_box">
+                <ScalarProperty Name="sr_no" ColumnName="sr_no" />
+                <ScalarProperty Name="from_mail" ColumnName="from_mail" />
+                <ScalarProperty Name="to_mail" ColumnName="to_mail" />
+                <ScalarProperty Name="subject" ColumnName="subject" />
+                <ScalarProperty Name="body" ColumnName="body" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
